@@ -1,0 +1,90 @@
+plugins {
+    id 'com.android.application'
+}
+
+android {
+    namespace 'by.viberlead.app'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId "by.viberlead.app"
+        minSdk 21
+        targetSdk 34
+        versionCode 39
+        versionName "2.27"
+    }
+
+    buildFeatures {
+        buildConfig true
+    }
+
+    signingConfigs {
+        release {
+            def ks = rootProject.file("keystore/viberlead.jks")
+            if (ks.exists()) {
+                storeFile ks
+                storePassword "viberlead"
+                keyAlias "viberlead"
+                keyPassword "viberlead"
+            }
+        }
+        lite {
+            def ks = rootProject.file("keystore/viberlead-lite.jks")
+            if (ks.exists()) {
+                storeFile ks
+                storePassword "viberleadlite"
+                keyAlias "viberleadlite"
+                keyPassword "viberleadlite"
+            }
+        }
+    }
+
+    flavorDimensions += "edition"
+    productFlavors {
+        pro {
+            dimension "edition"
+            buildConfigField "boolean", "LITE", "false"
+            manifestPlaceholders = [appName: "Заявки в Viber"]
+            def ks = rootProject.file("keystore/viberlead.jks")
+            if (ks.exists()) signingConfig signingConfigs.release
+        }
+        lite {
+            dimension "edition"
+            applicationIdSuffix ".lite"
+            versionNameSuffix "-lite"
+            buildConfigField "boolean", "LITE", "true"
+            manifestPlaceholders = [appName: "Заявки в Viber Лайт"]
+            def ks = rootProject.file("keystore/viberlead-lite.jks")
+            if (ks.exists()) signingConfig signingConfigs.lite
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            zipAlignEnabled true
+        }
+        debug {
+            minifyEnabled false
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+
+    lint {
+        abortOnError false
+    }
+
+    packagingOptions {
+        resources {
+            excludes += ['META-INF/*.kotlin_module']
+        }
+    }
+}
+
+// Внешних зависимостей нет: приложение написано на чистой Java + Android SDK.
+dependencies {
+}
