@@ -1,0 +1,453 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/Toolbar">
+        <Button
+            android:id="@+id/btn_back"
+            style="@style/ToolbarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="0dp"
+            android:text="@string/btn_back" />
+
+        <TextView
+            style="@style/ToolbarTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:text="@string/title_settings" />
+    </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:paddingBottom="16dp">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- 1. Режим -->
+            <LinearLayout style="@style/Card" android:id="@+id/card_mode">
+                <TextView style="@style/SectionTitle" android:text="@string/set_group_channel" />
+                <TextView
+                    android:id="@+id/label_mode"
+                    style="@style/FieldLabel"
+                    android:text="@string/set_mode" />
+                <Spinner
+                    android:id="@+id/spinner_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_field" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/set_mode_hint"
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 2. Viber API -->
+            <LinearLayout style="@style/Card" android:id="@+id/card_api">
+                <TextView style="@style/SectionTitle" android:text="@string/set_viber_api" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_token" />
+                <EditText
+                    android:id="@+id/ed_token"
+                    style="@style/FieldInput"
+                    android:hint="@string/set_token_hint"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_api_url" />
+                <EditText
+                    android:id="@+id/ed_api_url"
+                    style="@style/FieldInput"
+                    android:hint="https://chatapi.viber.com/pa"
+                    android:inputType="textUri"
+                    android:textSize="13sp" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_receiver" />
+                <EditText
+                    android:id="@+id/ed_receiver"
+                    style="@style/FieldInput"
+                    android:hint="@string/set_receiver_hint"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_broadcast_list" />
+                <EditText
+                    android:id="@+id/ed_broadcast_list"
+                    style="@style/FieldInput"
+                    android:hint="@string/set_broadcast_hint"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_check_token"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/set_check_token" />
+
+                <Button
+                    android:id="@+id/btn_token_help"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="8dp"
+                    android:text="❓ Что даёт токен и как его получить" />
+
+                <TextView
+                    android:id="@+id/tv_token_result"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:textSize="12.5sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- 3. Deep link -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="@string/set_deeplink" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_phone" />
+                <EditText
+                    android:id="@+id/ed_phone"
+                    style="@style/FieldInput"
+                    android:hint="+375291234567"
+                    android:inputType="phone" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_chat_uri" />
+                <EditText
+                    android:id="@+id/ed_chat_uri"
+                    style="@style/FieldInput"
+                    android:hint="viber://pa?chatURI=ваш_аккаунт"
+                    android:inputType="textUri"
+                    android:textSize="13sp" />
+
+                <CheckBox
+                                    android:id="@+id/cb_fast_send"
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginTop="8dp"
+                                    android:checked="true"
+                                    android:text="⚡ Отправлять сразу в запомненный чат получателя (без экрана выбора чата)"
+                                    android:textColor="@color/text_primary"
+                                    android:textSize="13.5sp" />
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Получатель: ссылка выше или «ID получателя» в разделе Viber API."
+                                    android:textSize="12sp" />
+
+                <TextView style="@style/FieldLabel" android:text="Способ отправки в группу" />
+                <Spinner
+                    android:id="@+id/sp_group_method"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_field" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/set_chat_uri_hint"
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 3.5 Телефоны -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="Телефоны" />
+
+                <TextView style="@style/FieldLabel" android:text="Код страны по умолчанию (без «+»)" />
+                <EditText
+                    android:id="@+id/ed_phone_cc"
+                    style="@style/FieldInput"
+                    android:hint="375"
+                    android:inputType="number"
+                    android:maxLength="4" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="Любой ввод телефона приводится к международному формату: «029 123-45-67», «8 029 …», «29 …» → +375291234567 — сразу при вставке и вводе. Код используется, когда номер введён без кода страны."
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 4. Webhook -->
+            <LinearLayout style="@style/Card" android:id="@+id/card_webhook">
+                <TextView style="@style/SectionTitle" android:text="@string/set_webhook" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_webhook_url" />
+                <EditText
+                    android:id="@+id/ed_webhook_url"
+                    style="@style/FieldInput"
+                    android:hint="@string/set_webhook_url_hint"
+                    android:inputType="textUri"
+                    android:textSize="13sp" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_webhook_token" />
+                <EditText
+                    android:id="@+id/ed_webhook_token"
+                    style="@style/FieldInput"
+                    android:hint="X-Auth-Token"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+            </LinearLayout>
+
+            <!-- 5. Сообщение -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="@string/set_message" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_company" />
+                <EditText
+                    android:id="@+id/ed_company"
+                    style="@style/FieldInput"
+                    android:hint="@string/set_company_hint"
+                    android:inputType="text" />
+
+                <TextView style="@style/FieldLabel" android:text="Контакт по умолчанию" />
+                <EditText
+                    android:id="@+id/ed_last_contact"
+                    style="@style/FieldInput"
+                    android:hint="Подставляется в новую заявку автоматически"
+                    android:inputType="textPersonName" />
+
+                <TextView style="@style/FieldLabel" android:text="Строка «Точка» в заявке" />
+                <Spinner
+                    android:id="@+id/sp_point_mode"
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:background="@drawable/bg_field" />
+
+                <TextView style="@style/FieldLabel" android:text="@string/set_template" />
+                <EditText
+                    android:id="@+id/ed_template"
+                    style="@style/FieldInput"
+                    android:gravity="top|start"
+                    android:hint="@string/set_template_hint"
+                    android:inputType="textMultiLine"
+                    android:minLines="3"
+                    android:textSize="13sp" />
+
+                <Button
+                    android:id="@+id/btn_preview"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="14dp"
+                    android:text="@string/set_preview" />
+
+                <TextView
+                    android:id="@+id/tv_preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:background="@drawable/bg_field"
+                    android:padding="12dp"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13sp"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <!-- 6. Поля формы -->
+            <LinearLayout style="@style/Card" android:id="@+id/card_fields">
+                <TextView style="@style/SectionTitle" android:text="@string/set_fields" />
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="6dp"
+                    android:text="@string/set_fields_hint"
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+
+                <EditText
+                    android:id="@+id/ed_fields"
+                    style="@style/FieldInput"
+                    android:fontFamily="monospace"
+                    android:gravity="top|start"
+                    android:hint="[]"
+                    android:inputType="textMultiLine"
+                    android:minLines="8"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tv_fields_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textSize="12.5sp"
+                    android:visibility="gone" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <Button
+                        android:id="@+id/btn_fields_example"
+                        style="@style/GhostButton"
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_weight="1"
+                        android:text="@string/set_fields_load_example"
+                        android:textSize="13sp" />
+
+                    <Button
+                        android:id="@+id/btn_fields_reset"
+                        style="@style/GhostButton"
+                        android:layout_width="0dp"
+                        android:layout_height="46dp"
+                        android:layout_marginStart="8dp"
+                        android:layout_weight="1"
+                        android:text="@string/set_fields_reset"
+                        android:textSize="13sp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <!-- 7. База организаций -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="База организаций" />
+                <TextView
+                    style="@style/FieldLabel"
+                    android:text="База автоматически дублируется в файл Download/viberlead_orgs.json, восстанавливается после переустановки приложения и ей можно поделиться или перенести на другое устройство." />
+                <Button
+                    android:id="@+id/btn_share_orgs"
+                    style="@style/GhostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:text="📤 Поделиться базой организаций"
+                    android:textSize="13sp" />
+                <Button
+                    android:id="@+id/btn_import_db"
+                    style="@style/GhostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:text="📥 Принять базу (добавляются только новые организации)"
+                    android:textSize="13sp" />
+                <TextView
+                    android:id="@+id/tv_db_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textSize="12.5sp" />
+            </LinearLayout>
+
+            <!-- 7.5 Обновление с GitHub (v2.28) -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="@string/set_update" />
+                <TextView
+                    android:id="@+id/tv_update_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12.5sp" />
+                <Button
+                    android:id="@+id/btn_update_check"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/update_check" />
+                <Button
+                    android:id="@+id/btn_update_install"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="6dp"
+                    android:text="⬇️ Установить скачанную версию"
+                    android:visibility="gone" />
+                <CheckBox
+                    android:id="@+id/cb_update_auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="true"
+                    android:text="@string/update_auto"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13.5sp" />
+                <TextView style="@style/FieldLabel" android:text="Токен GitHub" />
+                <EditText
+                    android:id="@+id/ed_update_token"
+                    style="@style/FieldInput"
+                    android:hint="@string/update_token_hint"
+                    android:inputType="textPassword"
+                    android:textSize="13sp" />
+                <TextView style="@style/FieldLabel" android:text="Репозиторий" />
+                <EditText
+                    android:id="@+id/ed_update_repo"
+                    style="@style/FieldInput"
+                    android:hint="@string/update_repo_hint"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/update_note"
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <!-- 8. Авто-вставка в Viber -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="Авто-вставка в Viber" />
+                <TextView
+                    style="@style/FieldLabel"
+                    android:text="Служба спецвозможностей сама вставляет текст заявки в поле ввода открытого чата Viber (и нажимает «Отправить», если отмечено ниже). Без неё текст остаётся в буфере обмена." />
+                <TextView
+                    android:id="@+id/tv_autopaste_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="6dp"
+                    android:textSize="12.5sp" />
+                <TextView
+                    android:id="@+id/tv_autopaste_diag"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textSize="11.5sp"
+                    android:textColor="@color/text_secondary" />
+                <Button
+                    android:id="@+id/btn_autopaste"
+                    style="@style/GhostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="8dp"
+                    android:text="Включить авто-вставку (настройки Android)"
+                    android:textSize="13sp" />
+                <Button
+                    android:id="@+id/btn_app_info"
+                    style="@style/GhostButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="46dp"
+                    android:layout_marginTop="6dp"
+                    android:text="О приложении (если Android пишет «ограниченные настройки»)"
+                    android:textSize="13sp" />
+                <CheckBox
+                    android:id="@+id/cb_auto_send"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="true"
+                    android:text="Авто-нажатие кнопки «Отправить» в Viber после вставки"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13.5sp" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <Button
+        android:id="@+id/btn_save"
+        style="@style/PrimaryButton"
+        android:layout_margin="14dp"
+        android:text="Сохранить настройки" />
+</LinearLayout>

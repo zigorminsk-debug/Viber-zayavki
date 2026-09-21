@@ -1,0 +1,174 @@
+# Сборка APK приложения «Заявки в Viber» (ViberLead) прямо на GitHub.
+#
+# Как пользоваться:
+#  1) Любая пушь в любую ветку — автосборка: юнит-тесты + два release-APK
+#     (pro и lite), проверка подписи. APK видны в двух местах:
+#       • артефакты запуска (Actions → запуск → Files);
+#       • GitHub Release «dev» (Releases → dev) — ОБНОВЛЯЕТСЯ автоматически
+#         на каждый пуш, APK скачиваются в один клик. Это prerelease, он НЕ
+#         является «latest» — автообнователь в приложении его не видит.
+#  2) Кнопка «Run workflow» (вкладка Actions) — НОВАЯ ВЕРСИЯ:
+#     versionCode автоматически +1, можно поменять versionName;
+#     создаётся официальный GitHub Release (latest) с двумя APK — именно
+#     его ставит себе приложение по автообновлению; новый versionCode
+#     закоммичен обратно в ветку (следующая сборка будет ещё новее).
+#
+# Ключи подписи лежат в репозитории (viber-lead/keystore/), пароли —
+# в app/build.gradle. Для более безопасного режима задайте в
+# Settings → Secrets и variables → Actions переменные
+# KS_PASS_PRO_STORE / KS_PASS_PRO_KEY / KS_PASS_LITE_STORE / KS_PASS_LITE_KEY
+# (и положите свои .jks вместо файлов в репозитории).
+name: Build APK
+
+on:
+  push:
+    branches: ["*"]
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: "versionName (напр. 2.28). Пусто — оставить текущий"
+        required: false
+        default: ""
+      release_notes:
+        description: "Примечания к релизу"
+        required: false
+        default: "Собрано автоматически GitHub Actions."
+
+permissions:
+  contents: write
+
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Тесты + APK (pro, lite)
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      KS_PASS_PRO_STORE: ${{ secrets.KS_PASS_PRO_STORE }}
+      KS_PASS_PRO_KEY: ${{ secrets.KS_PASS_PRO_KEY }}
+      KS_PASS_LITE_STORE: ${{ secrets.KS_PASS_LITE_STORE }}
+      KS_PASS_LITE_KEY: ${{ secrets.KS_PASS_LITE_KEY }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Android SDK (platform 34, build-tools 34)
+        env:
+          SDK_ROOT: /opt/android-sdk
+        run: |
+          mkdir -p "$SDK_ROOT/cmdline-tools"
+          curl -fsSL -o /tmp/ct.zip \
+            https://dl.google.com/android/repository/commandlinetools-linux-11076708_latest.zip
+          unzip -q /tmp/ct.zip -d /tmp/ct
+          mv /tmp/ct/cmdline-tools "$SDK_ROOT/cmdline-tools/latest"
+          yes | "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_ROOT" --licenses > /dev/null
+          "$SDK_ROOT/cmdline-tools/latest/bin/sdkmanager" --sdk_root="$SDK_ROOT" \
+            "platforms;android-34" "build-tools;34.0.0"
+          echo "ANDROID_HOME=$SDK_ROOT" >> "$GITHUB_ENV"
+          echo "$SDK_ROOT/build-tools/34.0.0" >> "$GITHUB_PATH"
+
+      # Ручной запуск («Run workflow»): новая версия
+      - name: Новая версия (versionCode +1, versionName по вводу)
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          NEW_VERSION_NAME: ${{ inputs.version_name }}
+        run: |
+          cd viber-lead
+          if [ -n "$NEW_VERSION_NAME" ]; then
+            sed -i "s/versionName \"[^\"]*\"/versionName \"$NEW_VERSION_NAME\"/" app/build.gradle
+          fi
+          CUR=$(grep -oP 'versionCode\s+\K[0-9]+' app/build.gradle)
+          NEXT=$((CUR + 1))
+          sed -i "s/versionCode [0-9]*/versionCode $NEXT/" app/build.gradle
+          echo "Собираем новую версию: code $NEXT, name $(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)"
+
+      - name: Версии из build.gradle
+        id: versions
+        run: |
+          cd viber-lead
+          echo "version_code=$(grep -oP 'versionCode\s+\K[0-9]+' app/build.gradle)" >> "$GITHUB_OUTPUT"
+          echo "version_name=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)" >> "$GITHUB_OUTPUT"
+
+      - name: Юнит-тесты (JVM)
+        run: cd viber-lead && ./gradlew test --console=plain --stacktrace
+
+      - name: Сборка release-APK (pro + lite)
+        run: cd viber-lead && ./gradlew :app:assembleProRelease :app:assembleLiteRelease --console=plain --stacktrace
+
+      - name: Проверка подписи APK
+        run: |
+          for apk in viber-lead/app/build/outputs/apk/pro/release/app-pro-release.apk \
+                     viber-lead/app/build/outputs/apk/lite/release/app-lite-release.apk; do
+            echo "== $apk"
+            apksigner verify --print-certs "$apk"
+          done
+
+      - name: Упаковать APK
+        run: |
+          mkdir -p dist
+          cp viber-lead/app/build/outputs/apk/pro/release/app-pro-release.apk \
+             "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-pro.apk"
+          cp viber-lead/app/build/outputs/apk/lite/release/app-lite-release.apk \
+             "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-lite.apk"
+          ls -la dist/
+
+      - name: Артефакты запуска
+        uses: actions/upload-artifact@v4
+        with:
+          name: ViberLead-v${{ steps.versions.outputs.version_name }}-code${{ steps.versions.outputs.version_code }}
+          path: dist/*.apk
+          if-no-files-found: error
+          retention-days: 30
+
+      # Каждая пушь: dev-релиз на GitHub Releases (обновляется на месте).
+      # Prerelease: /releases/latest (его читает автообновление в приложении)
+      # остаётся официальным релизом от «Run workflow».
+      - name: Dev-релиз на GitHub (каждая пушь)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev --yes > /dev/null 2>&1 || true
+          gh release create dev \
+            --title "Dev v${{ steps.versions.outputs.version_name }} (code ${{ steps.versions.outputs.version_code }})" \
+            --prerelease \
+            --notes "Автосборка с каждой пуши. Ветка: ${{ github.ref_name }}, коммит: ${{ github.sha }}. Официальная версия — через Actions → Build APK → Run workflow." \
+            "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-pro.apk" \
+            "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-lite.apk"
+          echo "Dev-релиз обновлён:"
+          gh release view dev --json tagName,assets --jq '.tagName + ": " + ([.assets[].name] | join(", "))'
+
+      # Ручной запуск: GitHub Release с новыми APK
+      - name: Релиз с APK (только ручной запуск)
+        if: github.event_name == 'workflow_dispatch'
+        uses: softprops/action-gh-release@v2
+        with:
+          name: "ViberLead v${{ steps.versions.outputs.version_name }} (code ${{ steps.versions.outputs.version_code }})"
+          body: ${{ inputs.release_notes }}
+          make_latest: true
+          files: |
+            dist/ViberLead-v${{ steps.versions.outputs.version_name }}-pro.apk
+            dist/ViberLead-v${{ steps.versions.outputs.version_name }}-lite.apk
+
+      # Ручной запуск: фиксируем новый versionCode в ветке
+      - name: Сохранить новый versionCode в ветку (только ручной запуск)
+        if: github.event_name == 'workflow_dispatch'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add viber-lead/app/build.gradle
+          if git diff --cached --quiet; then
+            echo "Изменений в app/build.gradle нет"
+          else
+            git commit -m "build: versionCode → ${{ steps.versions.outputs.version_code }} (GitHub Actions)"
+            git push origin "HEAD:refs/heads/${GITHUB_REF_NAME}"
+          fi

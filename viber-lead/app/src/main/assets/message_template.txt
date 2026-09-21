@@ -1,0 +1,10 @@
+🔔 Заявка {company}
+🕒 {datetime}
+
+🏢 Организация: {org}
+📍 Адрес: {address}
+🗺 Точка: {address_link}
+👤 Контакт: {contact}
+📞 Телефон: {org_phone}
+🧾 Заявка: {request}
+💬 Комментарий: {comment}

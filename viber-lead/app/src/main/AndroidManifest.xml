@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- Единственные разрешения: интернет (отправка заявки) и проверка сети.
+         Контакты, СМС, геолокация и прочее приложению НЕ нужны. -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <!-- только дляAndroid 9 и ниже: дублирование базы организаций в Download -->
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
+    <!-- v2.28: автообновление — установка скачанного с GitHub APK (Android 8+).
+         Пользователь явно разрешает «установку неизвестных приложений» в настройках. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:label="${appName}"
+        android:supportsRtl="true"
+        android:usesCleartextTraffic="true"
+        android:theme="@style/AppTheme">
+
+        <activity
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="${appName}"
+            android:windowSoftInputMode="adjustResize">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".SettingsActivity"
+            android:exported="false"
+            android:label="@string/title_settings"
+            android:parentActivityName=".MainActivity" />
+
+        <activity
+            android:name=".OrgsActivity"
+            android:exported="false"
+            android:label="Организации"
+            android:parentActivityName=".MainActivity" />
+
+        <service
+            android:name=".AutoPasteService"
+            android:exported="false"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+            <meta-data
+                android:name="android.accessibilityservice"
+                android:resource="@xml/auto_paste_service" />
+        </service>
+
+        <provider
+            android:name=".DbFileProvider"
+            android:authorities="${applicationId}.dbfile"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <!-- v2.28: отдаёт скачанный APK обновления системному установщику -->
+        <provider
+            android:name=".UpdateFileProvider"
+            android:authorities="${applicationId}.update"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <activity
+            android:name=".HistoryActivity"
+            android:exported="false"
+            android:label="@string/title_history"
+            android:parentActivityName=".MainActivity" />
+
+    </application>
+</manifest>
