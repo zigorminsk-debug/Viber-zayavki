@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg"
+    android:orientation="vertical">
+
+    <LinearLayout style="@style/Toolbar">
+        <Button
+            android:id="@+id/btn_back"
+            style="@style/ToolbarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:layout_marginStart="0dp"
+            android:text="@string/btn_back" />
+
+        <TextView
+            style="@style/ToolbarTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="12dp"
+            android:text="@string/title_history" />
+
+        <Button
+            android:id="@+id/btn_clear"
+            style="@style/ToolbarButton"
+            android:layout_width="wrap_content"
+            android:layout_height="40dp"
+            android:text="@string/btn_clear" />
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/tv_empty"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:padding="40dp"
+        android:text="@string/history_empty"
+        android:textColor="@color/hint"
+        android:textSize="14sp" />
+
+    <!-- v2.28: ListView вместо ScrollView+LinearLayout — история без лимита,
+         строки рендерятся лениво, любые тысячи записей листаются без тормозов -->
+    <ListView
+        android:id="@+id/history_list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:clipToPadding="false"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="0dp"
+        android:paddingTop="4dp"
+        android:paddingBottom="16dp"
+        android:scrollbars="vertical" />
+</LinearLayout>

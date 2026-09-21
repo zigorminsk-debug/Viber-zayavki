@@ -1,0 +1,11 @@
+# Gradle / Android — артефакты сборки
+.gradle/
+build/
+local.properties
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Ручная сборка (scripts/build-apk.sh)
+viber-lead/dist/
+build/manual/

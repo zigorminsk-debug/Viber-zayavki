@@ -1,0 +1,47 @@
+[
+  {
+    "key": "org",
+    "label": "Организация",
+    "type": "org",
+    "required": true,
+    "hint": "Начните вводить — база подскажет"
+  },
+  {
+    "key": "address",
+    "label": "Адрес",
+    "type": "address",
+    "required": true,
+    "hint": "Улица, дом (кнопка 🧭 — маршрут)",
+    "orgMap": "address"
+  },
+  {
+    "key": "contact",
+    "label": "Контактное лицо",
+    "type": "text",
+    "required": false,
+    "hint": "К кому обращаться",
+    "orgMap": "contact"
+  },
+  {
+    "key": "org_phone",
+    "label": "Телефон организации",
+    "type": "phone",
+    "required": false,
+    "hint": "+375 …",
+    "orgMap": "phone"
+  },
+  {
+    "key": "request",
+    "label": "Заявка",
+    "type": "multiselect",
+    "required": true,
+    "options": ["Заправка", "Ремонт", "Сброс ошибок", "Диагностика"]
+  },
+  {
+    "key": "comment",
+    "label": "Комментарий",
+    "type": "multiline",
+    "required": false,
+    "hint": "Коротко о задаче"
+  }
+]

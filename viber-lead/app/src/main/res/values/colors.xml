@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Палитра в стиле csl.by: оранжевый акцент, светлый фон -->
+    <color name="viber_purple">#F7631B</color>
+    <color name="viber_purple_dark">#D64E0C</color>
+    <color name="viber_purple_deep">#C24407</color>
+    <color name="viber_pink">#FDBA2C</color>
+
+    <color name="bg">#F9F9FF</color>
+    <color name="card">#FFFFFF</color>
+    <color name="text_primary">#222222</color>
+    <color name="text_secondary">#777777</color>
+    <color name="hint">#9E9E9E</color>
+    <color name="divider">#ECECF4</color>
+    <color name="error">#D93A4C</color>
+    <color name="success">#1FA463</color>
+    <color name="field_bg">#FFFFFF</color>
+    <color name="field_border">#E3E3EE</color>
+    <color name="white">#FFFFFF</color>
+    <color name="ic_launcher_background">#F7631B</color>
+
+    <!-- Палитра csl.by: тёмно-синий хром + оранжевый акцент -->
+    <color name="site_dark">#04091E</color>
+    <color name="site_accent">#F7631B</color>
+    <color name="site_accent_dark">#D64E0C</color>
+    <color name="site_accent_light">#FDBA2C</color>
+    <color name="site_muted">#C7CBD6</color>
+</resources>

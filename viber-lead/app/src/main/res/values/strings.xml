@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Заявки в Viber</string>
+    <string name="title_settings">Настройки</string>
+    <string name="title_history">История заявок</string>
+
+    <string name="form_subtitle">Заполните поля — заявка уйдёт в группу Viber</string>
+    <string name="btn_send">Отправить заявку</string>
+    <string name="btn_send_short">Отправить</string>
+    <string name="btn_settings">Настройки</string>
+    <string name="btn_history">История</string>
+    <string name="btn_back">Назад</string>
+    <string name="btn_clear">Очистить историю</string>
+    <string name="btn_copy">Копировать текст</string>
+    <string name="btn_open_viber">Открыть в Viber</string>
+    <string name="btn_another">Новая заявка</string>
+
+    <string name="sending">Отправка…</string>
+    <string name="ok">ОК</string>
+    <string name="cancel">Отмена</string>
+    <string name="close">Закрыть</string>
+
+    <string name="sent_title">Заявка отправлена</string>
+    <string name="sent_api">Заявка доставлена через Viber API.</string>
+    <string name="sent_webhook">Заявка доставлена через webhook.</string>
+    <string name="sent_manual">Текст заявки сформирован. Нажмите «Отправить» в Viber.</string>
+    <string name="api_failed_fallback">Не удалось отправить через API.\nОткрываем Viber — отправьте текст вручную.\n\n</string>
+
+    <string name="err_fill">Заполните обязательные поля: %1$s</string>
+    <string name="err_network">Нет ответа от сервера. Проверьте интернет и настройки.</string>
+    <string name="history_empty">История пуста.\nЗдесь хранится ПОЛНАЯ история за всё время — отправленные заявки не теряются.</string>
+
+    <string name="st_ok">Отправлено</string>
+    <string name="st_manual">Через Viber</string>
+    <string name="st_err">Ошибка</string>
+
+    <!-- Настройки -->
+    <string name="set_group_channel">Способ отправки</string>
+    <string name="set_mode">Режим отправки</string>
+    <string name="set_mode_hint">API — автоматически (нужен токен). Viber-приложение — формирует текст и открывает чат. Webhook — отправка JSON на ваш URL (n8n, Make, свой сервер).</string>
+
+    <string name="mode_auto">Авто: сначала API, при ошибке — открыть Viber</string>
+    <string name="mode_api">Только Viber API</string>
+    <string name="mode_deeplink">Только открыть Viber (deep link)</string>
+    <string name="mode_webhook">Webhook (JSON на свой URL)</string>
+
+    <string name="set_viber_api">Viber API (Public Account / Broadcast)</string>
+    <string name="set_token">Токен (Auth-Token)</string>
+    <string name="set_token_hint">Скопируйте из Viber Admin Panel → Info → Token. Пример: 4f3a1c…-8b2d…</string>
+    <string name="set_api_url">Адрес API</string>
+    <string name="set_receiver">ID получателя (для send_message)</string>
+    <string name="set_receiver_hint">Viber-URIS / id пользователя, который подписан на ваш аккаунт. Оставьте пустым для broadcast_message.</string>
+    <string name="set_broadcast_list">broadcast_list (через запятую)</string>
+    <string name="set_broadcast_hint">Список подписчиков для broadcast_message. Пусто = всем подписчикам.</string>
+    <string name="set_check_token">Проверить токен (get_account_info)</string>
+    <string name="token_ok">Токен принят. Аккаунт: %1$s</string>
+    <string name="token_bad">Ошибка: %1$s</string>
+
+    <string name="set_deeplink">Открытие Viber</string>
+    <string name="set_chat_uri">Получатель: ссылка на чат / группу Viber</string>
+    <string name="set_chat_uri_hint">Куда уходить заявке: viber://pa?chatURI=…, viber://contact?number=+375… или ссылка-приглашение группы. Заявка откроется сразу в этом чате.</string>
+    <string name="set_phone">Телефон получателя (для viber://contact?number=)</string>
+
+    <string name="set_webhook">Webhook</string>
+    <string name="set_webhook_url">URL webhook</string>
+    <string name="set_webhook_url_hint">https://… (n8n, Make, Zapier, свой сервер)</string>
+    <string name="set_webhook_token">Секретный заголовок (необязательно)</string>
+
+    <string name="set_message">Сообщение</string>
+    <string name="set_company">Название отправителя (компании)</string>
+    <string name="set_company_hint">Заявка подписывается: «🔔 Заявка &lt;название&gt;». Меняется здесь в любой момент.</string>
+    <string name="set_template">Шаблон сообщения</string>
+    <string name="set_template_hint">Плейсхолдеры: {ключ_поля}, {company}, {datetime}, {device}, {address_link}. Пусто = шаблон по умолчанию.</string>
+    <string name="set_preview">Предпросмотр текста</string>
+
+    <string name="set_fields">Поля формы</string>
+    <string name="set_fields_hint">JSON-массив полей. Каждый объект: key, label, type (text|phone|email|number|multiline|select|multiselect|date|checkbox|org|address), required, hint, options[], defaultValue, prefill, orgMap.</string>
+    <string name="set_fields_reset">Вернуть поля по умолчанию</string>
+    <string name="set_fields_load_example">Вставить пример (заявка на услугу)</string>
+    <string name="set_fields_invalid">JSON с ошибкой: %1$s</string>
+
+    <string name="set_saved">Настройки сохранены</string>
+    <string name="set_not_configured">Отправка через API не настроена — откройте «Настройки» и укажите токен.</string>
+
+    <string name="prefilled_note">Поля с пометкой «авто» заполняются данными устройства</string>
+    <string name="auto_paste_desc">Вставляет текст заявки в поле ввода открытого чата Viber сразу после отправки из приложения ViberLead. Работает 30 секунд после нажатия «Отправить» и только в окне Viber.</string>
+</resources>

@@ -20,6 +20,11 @@ D8="$BT/d8"
 export PATH="$JAVA_HOME/bin:$PATH"
 
 PKG=by.viberlead.app
+# версия читается из app/build.gradle — в скрипте она не дублируется
+VC=$(grep -oP 'versionCode\s+\K[0-9]+' app/build.gradle)
+VN=$(grep -oP 'versionName\s+"\K[^"]+' app/build.gradle)
+[ -n "$VC" ] && [ -n "$VN" ] || { echo "Не удалось прочитать versionCode/versionName из app/build.gradle"; exit 1; }
+echo "version: $VN (code $VC)"
 SRC=app/src/main/java
 RES=app/src/main/res
 ASSETS=app/src/main/assets
@@ -34,8 +39,11 @@ echo "==> 1/6 aapt2 compile"
 echo "==> 2/6 aapt2 link"
 # Gradle-проект задаёт пакет через namespace в build.gradle, а ручной aapt2
 # требует атрибут package в манифесте — добавляем его во временную копию.
+# Плейсхолдеры ${appName} и ${applicationId} aapt2 не подставит — заменяем сами.
 MANIFEST_GEN="$OUT/AndroidManifest.xml"
-sed 's|<manifest |<manifest package="'"$PKG"'" |' "$MANIFEST" > "$MANIFEST_GEN"
+sed -e 's|<manifest |<manifest package="'"$PKG"'" |' \
+    -e 's|\${appName}|Заявки в Viber|g' \
+    -e 's|\${applicationId}|'"$PKG"'|g' "$MANIFEST" > "$MANIFEST_GEN"
 "$AAPT2" link \
   -o "$OUT/base.apk" \
   -I "$PLATFORM" \
@@ -44,8 +52,8 @@ sed 's|<manifest |<manifest package="'"$PKG"'" |' "$MANIFEST" > "$MANIFEST_GEN"
   --java "$OUT/gen" \
   --min-sdk-version 21 \
   --target-sdk-version 34 \
-  --version-code 32 \
-  --version-name 2.20 \
+  --version-code "$VC" \
+  --version-name "$VN" \
   --auto-add-overlay \
   "$OUT/res.zip"
 
