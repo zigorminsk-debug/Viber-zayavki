@@ -2,10 +2,15 @@
 #
 # Как пользоваться:
 #  1) Любая пушь в любую ветку — автосборка: юнит-тесты + два release-APK
-#     (pro и lite), проверка подписи, APK-файлы — в артефактах запуска.
+#     (pro и lite), проверка подписи. APK видны в двух местах:
+#       • артефакты запуска (Actions → запуск → Files);
+#       • GitHub Release «dev» (Releases → dev) — ОБНОВЛЯЕТСЯ автоматически
+#         на каждый пуш, APK скачиваются в один клик. Это prerelease, он НЕ
+#         является «latest» — автообнователь в приложении его не видит.
 #  2) Кнопка «Run workflow» (вкладка Actions) — НОВАЯ ВЕРСИЯ:
 #     versionCode автоматически +1, можно поменять versionName;
-#     создаётся GitHub Release с двумя APK, новый versionCode
+#     создаётся официальный GitHub Release (latest) с двумя APK — именно
+#     его ставит себе приложение по автообновлению; новый versionCode
 #     закоммичен обратно в ветку (следующая сборка будет ещё новее).
 #
 # Ключи подписи лежат в репозитории (viber-lead/keystore/), пароли —
@@ -123,6 +128,24 @@ jobs:
           path: dist/*.apk
           if-no-files-found: error
           retention-days: 30
+
+      # Каждая пушь: dev-релиз на GitHub Releases (обновляется на месте).
+      # Prerelease: /releases/latest (его читает автообновление в приложении)
+      # остаётся официальным релизом от «Run workflow».
+      - name: Dev-релиз на GitHub (каждая пушь)
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release delete dev --yes > /dev/null 2>&1 || true
+          gh release create dev \
+            --title "Dev v${{ steps.versions.outputs.version_name }} (code ${{ steps.versions.outputs.version_code }})" \
+            --prerelease \
+            --notes "Автосборка с каждой пуши. Ветка: ${{ github.ref_name }}, коммит: ${{ github.sha }}. Официальная версия — через Actions → Build APK → Run workflow." \
+            "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-pro.apk" \
+            "dist/ViberLead-v${{ steps.versions.outputs.version_name }}-lite.apk"
+          echo "Dev-релиз обновлён:"
+          gh release view dev --json tagName,assets --jq '.tagName + ": " + ([.assets[].name] | join(", "))'
 
       # Ручной запуск: GitHub Release с новыми APK
       - name: Релиз с APK (только ручной запуск)
