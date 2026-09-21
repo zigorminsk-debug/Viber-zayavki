@@ -121,6 +121,9 @@ public class MainActivity extends Activity {
         }
         rebuildForm();
         restoreOrgDbAsync();
+        // v2.28: автообновление с GitHub (тихо: только если включено и
+        // с последней проверки прошло ≥6 часов; сеть — в фоновом потоке)
+        UpdateFlow.autoCheckOnStartup(this);
     }
 
     /** База организаций переживает переустановку: восстанавливается из Download. */

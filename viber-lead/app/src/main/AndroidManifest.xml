@@ -10,6 +10,9 @@
     <uses-permission
         android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         android:maxSdkVersion="28" />
+    <!-- v2.28: автообновление — установка скачанного с GitHub APK (Android 8+).
+         Пользователь явно разрешает «установку неизвестных приложений» в настройках. -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
 
     <application
         android:allowBackup="true"
@@ -58,6 +61,13 @@
         <provider
             android:name=".DbFileProvider"
             android:authorities="${applicationId}.dbfile"
+            android:exported="false"
+            android:grantUriPermissions="true" />
+
+        <!-- v2.28: отдаёт скачанный APK обновления системному установщику -->
+        <provider
+            android:name=".UpdateFileProvider"
+            android:authorities="${applicationId}.update"
             android:exported="false"
             android:grantUriPermissions="true" />
 

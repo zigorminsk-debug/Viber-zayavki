@@ -42,6 +42,10 @@ public class SettingsActivity extends Activity {
     private CheckBox cbAutoSend;
     private TextView tvAutoPasteStatus;
     private TextView tvAutoPasteDiag;
+    private TextView tvUpdateStatus;
+    private Button btnUpdateCheck, btnUpdateInstall;
+    private CheckBox cbUpdateAuto;
+    private EditText edUpdateToken, edUpdateRepo;
     private static final int REQ_IMPORT_DB = 802;
     private TextView tvTokenResult, tvPreview, tvFieldsStatus;
     private boolean dirty = false;
@@ -96,6 +100,27 @@ public class SettingsActivity extends Activity {
         cbAutoSend = findViewById(R.id.cb_auto_send);
         tvAutoPasteStatus = findViewById(R.id.tv_autopaste_status);
         tvAutoPasteDiag = findViewById(R.id.tv_autopaste_diag);
+        tvUpdateStatus = findViewById(R.id.tv_update_status);
+        btnUpdateCheck = findViewById(R.id.btn_update_check);
+        btnUpdateInstall = findViewById(R.id.btn_update_install);
+        cbUpdateAuto = findViewById(R.id.cb_update_auto);
+        edUpdateToken = findViewById(R.id.ed_update_token);
+        edUpdateRepo = findViewById(R.id.ed_update_repo);
+        btnUpdateCheck.setOnClickListener(v -> {
+            // сохраняем поля обновления сразу — чтобы проверка работала
+            // по введённым значениям без нажатия «Сохранить настройки»
+            settings.setUpdateAuto(cbUpdateAuto.isChecked());
+            settings.setUpdateToken(edUpdateToken.getText() == null
+                    ? "" : edUpdateToken.getText().toString().trim());
+            settings.setUpdateRepo(edUpdateRepo.getText() == null
+                    ? "" : edUpdateRepo.getText().toString().trim());
+            UpdateFlow.manualCheck(this, tvUpdateStatus);
+        });
+        btnUpdateInstall.setOnClickListener(v -> UpdateFlow.installDownloaded(this));
+        // правки в полях обновления тоже считаются несохранёнными изменениями
+        dirtyOnlyWatcher(edUpdateToken);
+        dirtyOnlyWatcher(edUpdateRepo);
+        cbUpdateAuto.setOnCheckedChangeListener((btn2, checked) -> dirty = true);
         findViewById(R.id.btn_autopaste).setOnClickListener(v -> {
             if (Settings.isAutoPasteAvailable(this)) {
                 showAutoPasteHelp();
@@ -204,6 +229,7 @@ public class SettingsActivity extends Activity {
     protected void onResume() {
         super.onResume();
         refreshAutoPasteStatus();
+        refreshUpdateInstallButton();
     }
 
     @Override
@@ -236,6 +262,24 @@ public class SettingsActivity extends Activity {
                     .setNeutralButton("Закрыть", null)
                     .show();
         }
+    }
+
+    /** TextWatcher, который только помечает несохранённые изменения. */
+    private void dirtyOnlyWatcher(EditText e) {
+        e.addTextChangedListener(new android.text.TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence c, int a, int b, int d) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence c, int a, int b, int d) {
+            }
+
+            @Override
+            public void afterTextChanged(android.text.Editable e2) {
+                if (!loading) dirty = true;
+            }
+        });
     }
 
     private void openAppInfo() {
@@ -346,6 +390,37 @@ public class SettingsActivity extends Activity {
         refreshDbStatus();
         edTemplate.setText(settings.getTemplate());
         edFields.setText(pretty(settings.getFieldsRaw()));
+        tvUpdateStatus.setText("Текущая версия: " + Updater.localVersionName(this)
+                + (Updater.localVersionCode(this) > 0
+                    ? " (code " + Updater.localVersionCode(this) + ")" : "")
+                + "\nАвтообновление: " + (settings.isUpdateAuto() ? "включено" : "выключено"));
+        cbUpdateAuto.setChecked(settings.isUpdateAuto());
+        edUpdateToken.setText(settings.getUpdateToken());
+        edUpdateRepo.setText(settings.getUpdateRepo());
+        refreshUpdateInstallButton();
+    }
+
+    /** Кнопка «Установить скачанную версию» видна, только если APK уже скачан и новее текущей. */
+    private void refreshUpdateInstallButton() {
+        java.io.File apk = null;
+        java.io.File dir = Updater.apkDir(this);
+        String localName = Updater.localVersionName(this);
+        String[] names = dir.list();
+        if (names != null) {
+            for (String n : names) {
+                if (!n.toLowerCase(java.util.Locale.US).endsWith(".apk")) continue;
+                String vn = UpdateUtil.versionNameFromAsset(n);
+                if (vn.isEmpty() || !UpdateUtil.versionNameIsNewer(vn, localName)) continue;
+                apk = new java.io.File(dir, n);
+            }
+        }
+        if (apk == null) {
+            btnUpdateInstall.setVisibility(View.GONE);
+        } else {
+            btnUpdateInstall.setVisibility(View.VISIBLE);
+            btnUpdateInstall.setText("⬇️ Установить скачанную версию ("
+                    + UpdateUtil.versionNameFromAsset(apk.getName()) + ")");
+        }
     }
 
     private int fieldsOk = 0;
@@ -402,6 +477,11 @@ public class SettingsActivity extends Activity {
 
     private void save() {
         fieldsOk = 0;
+        // v2.28: обновление — сохраняем первыми, чтобы токен не «провалился»
+        // при ошибке JSON полей ниже
+        settings.setUpdateAuto(cbUpdateAuto.isChecked());
+        settings.setUpdateToken(edUpdateToken.getText() == null ? "" : edUpdateToken.getText().toString().trim());
+        settings.setUpdateRepo(edUpdateRepo.getText() == null ? "" : edUpdateRepo.getText().toString().trim());
         settings.setMode(MODES[Math.max(0, spinnerMode.getSelectedItemPosition())]);
         settings.setToken(text(edToken));
         settings.setApiUrl(text(edApiUrl));

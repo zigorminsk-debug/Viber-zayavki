@@ -346,6 +346,57 @@
                     android:textSize="12.5sp" />
             </LinearLayout>
 
+            <!-- 7.5 Обновление с GitHub (v2.28) -->
+            <LinearLayout style="@style/Card">
+                <TextView style="@style/SectionTitle" android:text="@string/set_update" />
+                <TextView
+                    android:id="@+id/tv_update_status"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="12.5sp" />
+                <Button
+                    android:id="@+id/btn_update_check"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="10dp"
+                    android:text="@string/update_check" />
+                <Button
+                    android:id="@+id/btn_update_install"
+                    style="@style/GhostButton"
+                    android:layout_marginTop="6dp"
+                    android:text="⬇️ Установить скачанную версию"
+                    android:visibility="gone" />
+                <CheckBox
+                    android:id="@+id/cb_update_auto"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:checked="true"
+                    android:text="@string/update_auto"
+                    android:textColor="@color/text_primary"
+                    android:textSize="13.5sp" />
+                <TextView style="@style/FieldLabel" android:text="Токен GitHub" />
+                <EditText
+                    android:id="@+id/ed_update_token"
+                    style="@style/FieldInput"
+                    android:hint="@string/update_token_hint"
+                    android:inputType="textPassword"
+                    android:textSize="13sp" />
+                <TextView style="@style/FieldLabel" android:text="Репозиторий" />
+                <EditText
+                    android:id="@+id/ed_update_repo"
+                    style="@style/FieldInput"
+                    android:hint="@string/update_repo_hint"
+                    android:inputType="text"
+                    android:textSize="13sp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/update_note"
+                    android:textColor="@color/hint"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
             <!-- 8. Авто-вставка в Viber -->
             <LinearLayout style="@style/Card">
                 <TextView style="@style/SectionTitle" android:text="Авто-вставка в Viber" />

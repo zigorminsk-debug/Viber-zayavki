@@ -61,11 +61,19 @@ public class Settings {
     private static final String K_AUTO_SEND = "auto_send_click";
     private static final String K_POINT_MODE = "point_mode_v225";
     private static final String K_DRAFT = "draft_json_v227";
+    private static final String K_UPDATE_AUTO = "update_auto_check";
+    private static final String K_UPDATE_TOKEN = "update_github_token";
+    private static final String K_UPDATE_REPO = "update_repo";
+    private static final String K_UPDATE_LAST_CHECK = "update_last_check_ts";
     private static final String K_FIELDS = "fields_json";
     private static final String K_HISTORY = "history_json";
     private static final String K_LAST_VALUES = "last_values";
 
     private static final String DEFAULT_API_URL = "https://chatapi.viber.com/pa";
+    /** Репозиторий, откуда приложение качает обновления (GitHub Releases). */
+    public static final String DEFAULT_UPDATE_REPO = "zigorminsk-debug/Viber-zayavki";
+    /** Как часто делать автопроверку обновления при запуске: 6 часов. */
+    public static final long UPDATE_CHECK_INTERVAL_MS = 6L * 60 * 60 * 1000;
 
     /** Резерв на случай, если assets прочитать не удалось. */
     private static final String FALLBACK_FIELDS = "["
@@ -416,6 +424,43 @@ public class Settings {
 
     public void setAutoSend(boolean v) {
         sp.edit().putBoolean(K_AUTO_SEND, v).apply();
+    }
+
+    // ------------------------------------------------------- v2.28: автообновление
+
+    /** Автообновление при запуске (по умолчанию вкл). */
+    public boolean isUpdateAuto() {
+        return sp.getBoolean(K_UPDATE_AUTO, true);
+    }
+
+    public void setUpdateAuto(boolean v) {
+        sp.edit().putBoolean(K_UPDATE_AUTO, v).apply();
+    }
+
+    /** Токен GitHub: обязателен для приватного репозитория, для публичного — опционален. */
+    public String getUpdateToken() {
+        return trim(sp.getString(K_UPDATE_TOKEN, ""));
+    }
+
+    public void setUpdateToken(String v) {
+        sp.edit().putString(K_UPDATE_TOKEN, trim(v)).apply();
+    }
+
+    public String getUpdateRepo() {
+        String r = trim(sp.getString(K_UPDATE_REPO, DEFAULT_UPDATE_REPO));
+        return r.isEmpty() ? DEFAULT_UPDATE_REPO : r;
+    }
+
+    public void setUpdateRepo(String v) {
+        sp.edit().putString(K_UPDATE_REPO, trim(v)).apply();
+    }
+
+    public long getLastUpdateCheck() {
+        return sp.getLong(K_UPDATE_LAST_CHECK, 0);
+    }
+
+    public void setLastUpdateCheck(long ts) {
+        sp.edit().putLong(K_UPDATE_LAST_CHECK, ts).apply();
     }
 
     /** Входит ли служба авто-вставки в эту сборку (в обычной — нет из-за Play Защиты). */

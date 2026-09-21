@@ -83,5 +83,13 @@
     <string name="set_not_configured">Отправка через API не настроена — откройте «Настройки» и укажите токен.</string>
 
     <string name="prefilled_note">Поля с пометкой «авто» заполняются данными устройства</string>
+
+    <!-- Обновление с GitHub (v2.28) -->
+    <string name="set_update">Обновление с GitHub</string>
+    <string name="update_check">🔄 Проверить новую версию сейчас</string>
+    <string name="update_auto">Автообновление при запуске (проверка раз в 6 часов, новый APK скачивается сам)</string>
+    <string name="update_token_hint">GitHub token (нужен для приватного репозитория)</string>
+    <string name="update_repo_hint">owner/repo (по умолчанию zigorminsk-debug/Viber-zayavki)</string>
+    <string name="update_note">Когда на GitHub появляется новый релиз, приложение само скачивает APK своей сборки (про/лайт) и открывает системный установщик — остаётся нажать «Установить». На Android 8+ один раз нужно разрешить этому приложению «установку неизвестных приложений» (страница откроется сама).</string>
     <string name="auto_paste_desc">Вставляет текст заявки в поле ввода открытого чата Viber сразу после отправки из приложения ViberLead. Работает 30 секунд после нажатия «Отправить» и только в окне Viber.</string>
 </resources>
